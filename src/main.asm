@@ -920,10 +920,10 @@ spl_t:  push    bc
         ld      de,116*32+5
         call    puts_at
         ld      hl,txt_k_help
-        ld      de,140*32+8
+        ld      de,132*32+8
         call    puts_at
         ld      hl,txt_k_snd
-        ld      de,148*32+8
+        ld      de,140*32+8
         call    puts_at
         ld      de,txt_on               ; HL = cursor after the label
         ld      a,(sound)
@@ -931,7 +931,7 @@ spl_t:  push    bc
         jr      nz,spl_s
         ld      de,txt_off
 spl_s:  call    puts
-        ld      de,156*32+8
+        ld      de,148*32+8
         ld      a,(has_col)
         or      a
         jr      z,spl_q                 ; no colour hardware: no C line, Q moves up
@@ -943,11 +943,13 @@ spl_s:  call    puts
         jr      nz,spl_m
         ld      de,txt_mono
 spl_m:  call    puts
-        ld      de,164*32+8
+        ld      de,156*32+8
 spl_q:  ld      hl,txt_k_quit
         call    puts_at
         ld      hl,txt_by               ; "MADE BY: KAMI & AI": K M vivid, A I vivid and inverse
-        ld      de,172*32+4
+        ld      a,(txt_by_col)
+        ld      e,a
+        ld      d,168*32/256            ; text row 168, column = centred
         call    puts_at
         ld      a,'K'
         ld      bc,0x00CC
@@ -963,8 +965,15 @@ spl_q:  ld      hl,txt_k_quit
         call    put_kami
         ld      de,txt_and_
         call    puts
-        ld      hl,txt_credit
-        ld      de,182*32+8
+        ld      hl,txt_cof              ; coffee link, two centred lines
+        ld      a,(txt_cof_col)
+        ld      e,a
+        ld      d,176*32/256
+        call    puts_at
+        ld      hl,txt_url
+        ld      a,(txt_url_col)
+        ld      e,a
+        ld      d,184*32/256
         jp      puts_at
 
 help_screen:

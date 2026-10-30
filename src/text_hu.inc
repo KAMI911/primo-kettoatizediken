@@ -16,9 +16,13 @@ txt_on: defb "BE ", 0
 txt_off: defb "KI ", 0
 txt_colour: defb "SZ", 0x82, "NES", 0
 txt_mono: defb "MONO  ", 0
-txt_credit: defb "PRIMO A/B/C-RE", 0
 txt_by: defb "K", 0x81, "SZ", 0x82, "TETTE: ", 0
 txt_and_: defb " & AI", 0
+txt_cof: defb "H", 0x82, "VJ MEG EGY K", 0x80, "V", 0x81, "RA:", 0
+txt_url: defb "HTTPS://KO-FI.COM/KAMI911", 0
+txt_by_col: defb 5
+txt_cof_col: defb 6
+txt_url_col: defb 3
 msg_help: defb "H:S", 0x86, "G", 0x83, " M:HANG C:M", 0x83, "D R:", 0x86, "J", 0
 msg_win: defb "MEGVAN AZ 1024! FOLYTATHATOD", 0
 msg_over: defb "V", 0x81, "GE A J", 0x80, "T", 0x81, "KNAK - R: ", 0x86, "J", 0
