@@ -11,6 +11,7 @@ defc KEY_SOUND  = 5
 defc KEY_MODE   = 6
 defc KEY_HELP   = 7
 defc KEY_QUIT   = 8
+defc KEY_ANY    = 9                     ; any other key (splash and help only)
 defc BOARD_X    = 6                     ; board left edge, byte column
 defc BOARD_Y    = 16                    ; board top edge, pixel line
 defc WIN_EXP    = 10                    ; 2^10 = 1024
@@ -30,7 +31,7 @@ IF RENDER_TEST
 ENDIF
 splash_loop:
         call    draw_splash
-        call    wait_key
+        call    wait_any
         ld      c,a
         call    wait_release
         ld      a,c
@@ -345,6 +346,35 @@ rk_lp:  ld      a,(hl)
         jr      rk_lp
 rk_hit: ld      a,(hl)
         ret
+
+; read_any -> A = as read_key, or KEY_ANY if some other key of the 64 is down, else KEY_NONE. Clobbers AF,BC,HL.
+read_any:
+        call    read_key
+        cp      KEY_NONE
+        ret     nz
+        ld      c,0
+ra_l:   ld      b,0
+        in      a,(c)
+        rra
+        jr      c,ra_hit
+        inc     c
+        ld      a,c
+        cp      64
+        jr      nz,ra_l
+        ld      a,KEY_NONE
+        ret
+ra_hit: ld      a,KEY_ANY
+        ret
+
+; wait_any: like wait_key, but any key counts (splash and help screens).
+wait_any:
+        call    read_any
+        cp      KEY_NONE
+        jr      nz,wk_got
+        ld      hl,(ctr)
+        inc     hl
+        ld      (ctr),hl
+        jr      wait_any
 
 ; wait_key -> A = key. Runs a counter meanwhile and stirs it into the random seed, so every game differs.
 wait_key:
@@ -869,7 +899,7 @@ hs_lp:  ld      a,(hl)
         pop     de
         inc     d                       ; next text row (+256 bytes)
         jr      hs_lp
-hs_end: call    wait_key
+hs_end: call    wait_any
         jp      wait_release
 
         include "lib.asm"
