@@ -1,5 +1,5 @@
 # Primo Z80 assembly project. Same targets locally and in CI.
-#   make            universal .ptp (runtime colour/mono detect) + -bw / -color variants + WAVs
+#   make            universal .ptp (runtime colour/mono detect) + -bw (mono only) variants + WAVs
 #   make test       unit tests in a headless Z80 emulator (z88dk-ticks) + tool tests
 #   make check      verify every .ptp (structure, CRCs, memory ceiling)
 NAME      ?= kettoatizediken
@@ -15,9 +15,9 @@ TICKS = $(RUN) z88dk-ticks -mz80
 PTP   = python3 -I tools/ptp.py
 SRC   = $(wildcard src/*.asm src/*.inc)
 LANGS    = hu en
-VARIANTS = $(foreach l,$(LANGS),$(NAME)-$(l) $(NAME)-$(l)-bw $(NAME)-$(l)-color)
+VARIANTS = $(foreach l,$(LANGS),$(NAME)-$(l) $(NAME)-$(l)-bw)
 TAPE     = ketto10
-flags    = $(if $(findstring hu,$(1)),-DLANG_HU) $(if $(findstring -bw,$(1)),-DTARGET_BW) $(if $(findstring -color,$(1)),-DTARGET_COLOR)
+flags    = $(if $(findstring hu,$(1)),-DLANG_HU) $(if $(findstring -bw,$(1)),-DTARGET_BW)
 
 .PHONY: all test check size clean
 all: $(addprefix build/,$(addsuffix .ptp,$(VARIANTS))) $(addprefix build/,$(addsuffix .wav,$(VARIANTS))) check size

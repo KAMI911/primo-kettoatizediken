@@ -1,4 +1,4 @@
-; 1024 for the Primo (monochrome A/B and colour C/Pro). Builds universal (run-time detect), -DTARGET_BW (never colour) or -DTARGET_COLOR (same as universal).
+; 1024 for the Primo (monochrome A/B and colour C/Pro). Builds universal (run-time detect), -DTARGET_BW (never colour). -DTARGET_COLOR is only used by `make shots`.
 ; Language: English by default, -DLANG_HU for Hungarian (text in src/text_*.inc, made by tools/gen_text.py).
 ; Keys: arrows, WASD, IJKL or 8 4 2 6 move, R new game, M sound on/off, C switch mono/colour drawing, H help, Q or BRK quit.
 ; Needs the 48K/64K screen layout (video at $E800 mono; colour model $E700, game area from $E800).
