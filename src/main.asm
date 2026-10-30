@@ -186,6 +186,11 @@ toggle_mode:
         ld      a,(is_color)
         xor     1
         ld      (is_color),a
+        jp      nz,init_video           ; -> colour: init_video wipes everything and programs the palette
+        ld      hl,VRAM_CTRL            ; -> mono: switch colour off (control $E001 = 0) and drop the colour RAM and
+        ld      bc,0x0800               ; the 8 extra colour lines ($E700), or the old colours stay on the mono picture
+        xor     a
+        call    memfill
         jp      init_video
 
 ; ---------------------------------------------------------------- animation
