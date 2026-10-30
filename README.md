@@ -1,7 +1,7 @@
 # Kettő a tizediken (1024) – Primo (A/B monochrome + C/Pro colour)
 
 Z80 assembly, ~2 KB. Slide the tiles, merge equal ones, reach **1024** (play on up to 8192).
-Keys: arrow keys or `W A S D` = move, `R` = new game, `H` = help, `Q` or `BRK` = quit to BASIC, `M` = sound on/off, `C` = switch colour/mono drawing (use it if the picture is shifted up or has no colour: the auto-detection picked the wrong model).
+Keys: arrow keys or `W A S D` = move, `R` = new game, `H` = help, `Q` or `BRK` = quit to BASIC, `M` = sound on/off, `C` = switch colour/mono drawing (only offered when colour hardware is detected).
 
 | file (`build/`, each as `.ptp` and `.wav`) | what |
 |---|---|

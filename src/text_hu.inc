@@ -20,6 +20,7 @@ txt_credit: defb "PRIMO A/B/C-RE", 0
 msg_help: defb "H:S", 0x86, "G", 0x83, " M:HANG C:M", 0x83, "D R:", 0x86, "J", 0
 msg_win: defb "MEGVAN AZ 1024! FOLYTATHATOD", 0
 msg_over: defb "V", 0x81, "GE A J", 0x80, "T", 0x81, "KNAK - R: ", 0x86, "J", 0
+msg_help_m: defb "H:S", 0x86, "G", 0x83, " M:HANG R:", 0x86, "J", 0
 help_tbl:
         defb "HOGYAN KELL J", 0x80, "TSZANI", 0
         defb " ", 0
@@ -39,6 +40,29 @@ help_tbl:
         defb "R  ", 0x86, "J J", 0x80, "T", 0x81, "K", 0
         defb "M  HANG BE / KI", 0
         defb "C  SZ", 0x82, "NES / MONO K", 0x81, "PERNY", 0x85, 0
+        defb "H  EZ A S", 0x86, "G", 0x83, 0
+        defb "Q  KIL", 0x81, "P", 0x81, "S (VAGY BRK)", 0
+        defb " ", 0
+        defb "NYOMJ MEG EGY GOMBOT", 0
+        defb 0
+help_tbl_m:
+        defb "HOGYAN KELL J", 0x80, "TSZANI", 0
+        defb " ", 0
+        defb "MOZGASD A LAPOKAT A NYILAKKAL", 0
+        defb "VAGY W A S D, I J K L, ILL.", 0
+        defb "A 8 4 2 6 BILLENTY", 0x88, "KKEL.", 0
+        defb "AZ AZONOS SZ", 0x80, "M", 0x86, " LAPOK", 0
+        defb 0x84, "SSZEOLVADNAK, HA ", 0x81, "RINTIK", 0
+        defb "EGYM", 0x80, "ST: 2+2=4, 4+4=8 ...", 0
+        defb "MINDEN L", 0x81, "P", 0x81, "S UT", 0x80, "N ", 0x86, "J LAP", 0
+        defb "JELENIK MEG (2 VAGY 4).", 0
+        defb "ALAK", 0x82, "TS KI EGY 1024-ES LAPOT,", 0
+        defb "UT", 0x80, "NA FOLYTATHATOD.", 0
+        defb "V", 0x81, "GE A J", 0x80, "T", 0x81, "KNAK, HA A T", 0x80, "BLA", 0
+        defb "TELE, ", 0x81, "S NINCS EGYES", 0x82, "T", 0x81, "S.", 0
+        defb " ", 0
+        defb "R  ", 0x86, "J J", 0x80, "T", 0x81, "K", 0
+        defb "M  HANG BE / KI", 0
         defb "H  EZ A S", 0x86, "G", 0x83, 0
         defb "Q  KIL", 0x81, "P", 0x81, "S (VAGY BRK)", 0
         defb " ", 0

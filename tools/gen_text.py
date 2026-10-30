@@ -51,11 +51,13 @@ def write(path, d):
         L.append("txt_%s: defb %s" % (k, asm(d[k])))
     for k in ("msg_help", "msg_win", "msg_over"):
         L.append("%s: defb %s" % (k, asm(d[k])))
-    L.append("help_tbl:")
-    for line in d["help"]:
-        assert len(line) <= 30, line
-        L.append("        defb %s" % asm(line))
-    L.append("        defb 0")
+    L.append("msg_help_m: defb %s" % asm(re.sub(r" C:\S+", "", d["msg_help"])))     # no colour hardware: no C key
+    for label, lines in (("help_tbl", d["help"]), ("help_tbl_m", [l for l in d["help"] if not l.startswith("C  ")])):
+        L.append(label + ":")
+        for line in lines:
+            assert len(line) <= 30, line
+            L.append("        defb %s" % asm(line))
+        L.append("        defb 0")
     open(path, "w", encoding="utf-8").write("\n".join(L) + "\n")
 
 def font_ext(font_inc, path):

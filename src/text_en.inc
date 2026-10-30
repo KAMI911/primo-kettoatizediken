@@ -20,6 +20,7 @@ txt_credit: defb "FOR PRIMO A/B/C", 0
 msg_help: defb "H:HELP M:SOUND C:MODE R:NEW", 0
 msg_win: defb "YOU MADE 1024! KEEP GOING", 0
 msg_over: defb "GAME OVER - PRESS R", 0
+msg_help_m: defb "H:HELP M:SOUND R:NEW", 0
 help_tbl:
         defb "HOW TO PLAY", 0
         defb " ", 0
@@ -40,6 +41,30 @@ help_tbl:
         defb "R  NEW GAME", 0
         defb "M  SOUND ON / OFF", 0
         defb "C  COLOUR / MONO SCREEN", 0
+        defb "H  THIS HELP", 0
+        defb "Q  QUIT (OR BRK)", 0
+        defb " ", 0
+        defb "PRESS ANY KEY", 0
+        defb 0
+help_tbl_m:
+        defb "HOW TO PLAY", 0
+        defb " ", 0
+        defb "MOVE THE TILES WITH THE", 0
+        defb "ARROWS, W A S D, I J K L", 0
+        defb "OR THE 8 4 2 6 KEYS.", 0
+        defb "TILES WITH THE SAME", 0
+        defb "NUMBER MERGE WHEN THEY", 0
+        defb "TOUCH: 2+2=4, 4+4=8 ...", 0
+        defb "EVERY MOVE ADDS A NEW", 0
+        defb "TILE (2 OR 4).", 0
+        defb "MAKE A 1024 TILE TO WIN,", 0
+        defb "THEN KEEP GOING FOR MORE.", 0
+        defb "THE GAME ENDS WHEN THE", 0
+        defb "BOARD IS FULL AND NO", 0
+        defb "TILES CAN MERGE.", 0
+        defb " ", 0
+        defb "R  NEW GAME", 0
+        defb "M  SOUND ON / OFF", 0
         defb "H  THIS HELP", 0
         defb "Q  QUIT (OR BRK)", 0
         defb " ", 0

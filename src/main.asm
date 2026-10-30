@@ -23,6 +23,7 @@ start:
         ld      sp,stack_top            ; own stack in plain RAM, never in video memory
         call    detect_color
         ld      (is_color),a
+        ld      (has_col),a             ; colour hardware present: only then C and the colour texts are offered
         ld      a,1
         ld      (sound),a
         call    init_video
@@ -49,6 +50,9 @@ spl_snd:
         call    toggle_sound
         jr      splash_loop
 spl_mode:
+        ld      a,(has_col)
+        or      a
+        jr      z,splash_loop           ; no colour hardware: C does nothing
         call    toggle_mode
         jr      splash_loop
 ; quit: clear the screen, restore the caller's stack and return (to BASIC).
@@ -105,6 +109,9 @@ ml_snd: call    toggle_sound
         call    draw_sound
         jr      ml_rel
 ml_mode:
+        ld      a,(has_col)
+        or      a
+        jr      z,ml_rel
         call    toggle_mode
         call    redraw_all
         jr      ml_rel
@@ -128,7 +135,11 @@ new_game:
         call    spawn
         call    spawn
         ld      hl,msg_help
-        ld      (msg_ptr),hl
+        ld      a,(has_col)
+        or      a
+        jr      nz,ng_msg
+        ld      hl,msg_help_m
+ng_msg: ld      (msg_ptr),hl
         jp      redraw_all
 
 after_move:
@@ -869,8 +880,11 @@ spl_t:  push    bc
         jr      nz,spl_s
         ld      de,txt_off
 spl_s:  call    puts
-        ld      hl,txt_k_mode
         ld      de,156*32+8
+        ld      a,(has_col)
+        or      a
+        jr      z,spl_q                 ; no colour hardware: no C line, Q moves up
+        ld      hl,txt_k_mode
         call    puts_at
         ld      de,txt_colour
         ld      a,(is_color)
@@ -878,8 +892,8 @@ spl_s:  call    puts
         jr      nz,spl_m
         ld      de,txt_mono
 spl_m:  call    puts
-        ld      hl,txt_k_quit
         ld      de,164*32+8
+spl_q:  ld      hl,txt_k_quit
         call    puts_at
         ld      hl,txt_credit
         ld      de,182*32+8
@@ -888,7 +902,11 @@ spl_m:  call    puts
 help_screen:
         call    cls
         ld      hl,help_tbl
-        ld      de,1*256+2              ; text row 1, column 2
+        ld      a,(has_col)
+        or      a
+        jr      nz,hs_go
+        ld      hl,help_tbl_m
+hs_go:  ld      de,1*256+2              ; text row 1, column 2
 hs_lp:  ld      a,(hl)
         or      a
         jr      z,hs_end
@@ -937,6 +955,7 @@ splash_tiles: defb 1,3,7,10
 dbltab:   defb  0x00,0x03,0x0C,0x0F,0x30,0x33,0x3C,0x3F,0xC0,0xC3,0xCC,0xCF,0xF0,0xF3,0xFC,0xFF
 
 is_color: defb  0
+has_col:  defb  0
 old_sp:   defw  0
 vbase:    defw  0
 scrp:     defw  0
