@@ -768,7 +768,10 @@ dc_col: ld      a,(is_color)
         or      a
         ret     z
         ld      a,(cur_e)
-        ld      c,a
+        cp      12
+        jr      c,dc_ne
+        ld      a,11                    ; 2048, 4096 and 8192 share one colour (nibbles 12..15 belong to the credit)
+dc_ne:  ld      c,a
         add     a,a
         add     a,a
         add     a,a
@@ -947,10 +950,10 @@ spl_q:  ld      hl,txt_k_quit
         ld      de,172*32+4
         call    puts_at
         ld      a,'K'
-        ld      bc,0x00EE
+        ld      bc,0x00CC
         call    put_kami
         ld      a,'A'
-        ld      bc,0x01FF
+        ld      bc,0x01DD
         call    put_kami
         ld      a,'M'
         ld      bc,0x00EE
@@ -1006,9 +1009,9 @@ keytab: defb    0x39,0, 0x0E,0, 0x26,0, 0x1F,0, 0x35,0  ; left:  arrow, A, J, 4,
 ; Palette, RRRGGGBB, not yet inverted. 16 backgrounds (pixel 0) by colour nibble = tile exponent, then 16 foregrounds (pixel 1).
 palette:
         defb    0x00,0xFE,0xFA,0xF0,0xEC,0xE8,0xE0,0xFC     ; empty, 2, 4, 8, 16, 32, 64, 128
-        defb    0xBC,0x1C,0x1F,0xFF,0xFF,0xFF,0x00,0x00     ; 256, 512, 1024, 2048..8192 white, nibbles 14/15 = black (KAMI credit)
+        defb    0xBC,0x1C,0x1F,0xFF,0x00,0x00,0x00,0x00     ; 256, 512, 1024, 2048+ white (nibble 11), nibbles 12..15 = black (KAMI credit)
         defb    0xFF,0x00,0x00,0x00,0x00,0x00,0xFF,0x00     ; text/borders: white on empty, black on tiles, white on 64
-        defb    0x00,0x00,0x00,0x00,0x00,0x00,0xE3,0x1F     ; nibble 14 ink magenta, 15 ink cyan (K M / A I of the credit)
+        defb    0x00,0x00,0x00,0x00,0xE3,0x1F,0xFC,0x1C     ; nibbles 12..15 ink: magenta K, cyan A, yellow M, green I (credit)
 
 IF LANG_HU
         include "text_hu.inc"
