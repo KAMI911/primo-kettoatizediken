@@ -1,24 +1,7 @@
 ; Only assembled with -DRENDER_TEST (plus optionally -DRS_SPLASH or -DRS_HELP): draws one screen and streams the
 ; 8 KB video area ($E000-$FFFF) to port 1 so tools/render.py can turn it into a PNG.
-IF RS_KEYTEST
-        ld      hl,kt_demo
-        ld      de,kt_buf
-        ld      bc,7
-        ldir
-        ld      a,0x39
-        ld      (kt_last),a
-        call    kt_draw                 ; held codes 39 0E 1F, last 39
-        jp      rt_dump0
-kt_demo: defb 3,0x39,0x0E,0x1F,0,0,0
-        call    key_test                ; ticks returns the same value for every IN, so BRK is 'pressed' at once
-ELIF RS_SPLASH
+IF RS_SPLASH
         call    draw_splash
-        ld      de,170*32+8             ; put_hex check: should read 3F A5
-        call    loc
-        ld      a,0x3F
-        call    put_hex
-        ld      a,0xA5
-        call    put_hex
 ELIF RS_HELP
         call    cls
         ld      hl,help_tbl

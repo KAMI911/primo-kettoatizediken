@@ -1,6 +1,6 @@
 ; 1024 for the Primo (monochrome A/B and colour C/Pro). Builds universal (run-time detect), -DTARGET_BW or -DTARGET_COLOR.
 ; Language: English by default, -DLANG_HU for Hungarian (text in src/text_*.inc, made by tools/gen_text.py).
-; Keys: arrows, WASD, IJKL or 8 4 2 6 move, R new game, M sound on/off, C switch mono/colour drawing, H help.
+; Keys: arrows, WASD, IJKL or 8 4 2 6 move, R new game, M sound on/off, C switch mono/colour drawing, H help, Q or BRK quit.
 ; Needs the 48K/64K screen layout (video at $E800 mono; colour model $E700, game area from $E800).
         include "hw.inc"
         org     ORG
@@ -10,7 +10,7 @@ defc KEY_NEW    = 4
 defc KEY_SOUND  = 5
 defc KEY_MODE   = 6
 defc KEY_HELP   = 7
-defc KEY_TEST   = 8
+defc KEY_QUIT   = 8
 defc BOARD_X    = 6                     ; board left edge, byte column
 defc BOARD_Y    = 16                    ; board top edge, pixel line
 defc WIN_EXP    = 10                    ; 2^10 = 1024
@@ -18,6 +18,7 @@ defc LINE_HEAD  = 4*32                  ; score line (pixel line 4)
 defc LINE_MSG   = 180*32                ; message line (pixel line 180)
 
 start:
+        ld      (old_sp),sp             ; the caller's stack: `quit` returns through it
         ld      sp,stack_top            ; own stack in plain RAM, never in video memory
         call    detect_color
         ld      (is_color),a
@@ -39,8 +40,8 @@ splash_loop:
         jr      z,spl_mode
         cp      KEY_HELP
         jr      z,spl_help
-        cp      KEY_TEST
-        jr      z,spl_test
+        cp      KEY_QUIT
+        jr      z,quit
         call    new_game
         jr      main_loop
 spl_snd:
@@ -49,11 +50,12 @@ spl_snd:
 spl_mode:
         call    toggle_mode
         jr      splash_loop
+; quit: clear the screen, restore the caller's stack and return (to BASIC).
+quit:   call    cls
+        ld      sp,(old_sp)
+        ret
 spl_help:
         call    help_screen
-        jr      splash_loop
-spl_test:
-        call    key_test
         jr      splash_loop
 
 main_loop:
@@ -67,6 +69,8 @@ main_loop:
         jr      z,ml_mode
         cp      KEY_HELP
         jr      z,ml_help
+        cp      KEY_QUIT
+        jr      z,quit
         ld      a,(over)
         or      a
         jr      nz,ml_rel               ; game over: only the menu keys work
@@ -835,149 +839,12 @@ spl_s:  call    puts
         jr      nz,spl_m
         ld      de,txt_mono
 spl_m:  call    puts
-        ld      hl,txt_k_test
+        ld      hl,txt_k_quit
         ld      de,164*32+8
         call    puts_at
         ld      hl,txt_credit
         ld      de,182*32+8
         jp      puts_at
-
-; key_test: shows the scan codes (hex) of the keys held and the last key seen, until BRK (0x3F) is pressed.
-; Polls all 64 keys continuously and only redraws when something changed, so even a short key pulse is caught.
-key_test:
-        call    cls
-        ld      hl,txt_kt1
-        ld      de,8*32+2
-        call    puts_at
-        ld      hl,txt_kt2
-        ld      de,24*32+2
-        call    puts_at
-        xor     a
-        ld      (kt_buf),a
-        ld      a,0xFF
-        ld      (kt_last),a
-        call    kt_draw
-kt_lp:  call    kt_scan
-        or      a
-        jr      nz,kt_end
-        ld      hl,kt_new
-        ld      de,kt_buf
-        ld      b,7
-kt_cmp: ld      a,(de)
-        cp      (hl)
-        jr      nz,kt_chg
-        inc     hl
-        inc     de
-        djnz    kt_cmp
-        ld      a,(kt_last)             ; the last key may have changed even if nothing is held now
-        ld      hl,kt_shown
-        cp      (hl)
-        jr      z,kt_lp
-kt_chg: ld      hl,kt_new
-        ld      de,kt_buf
-        ld      bc,7
-        ldir
-        call    kt_draw
-        jr      kt_lp
-kt_end:
-IF RENDER_TEST
-        ret
-ELSE
-        jp      wait_release
-ENDIF
-
-; kt_scan: fills kt_new (count, up to 6 codes) with the keys held, remembers the last one -> A = 1 if BRK is held.
-kt_scan:
-        xor     a
-        ld      (kt_new),a
-        ld      c,0
-ks_l:   ld      b,0
-        in      a,(c)
-        rra
-        jr      nc,ks_n
-        ld      a,c
-        cp      0x3F
-        jr      nz,ks_a
-        ld      a,1
-        ret
-ks_a:   ld      (kt_last),a
-        ld      a,(kt_new)
-        cp      6
-        jr      nc,ks_n
-        ld      e,a
-        ld      d,0
-        inc     a
-        ld      (kt_new),a
-        ld      hl,kt_new+1
-        add     hl,de
-        ld      (hl),c
-ks_n:   inc     c
-        ld      a,c
-        cp      64
-        jr      nz,ks_l
-        xor     a
-        ret
-
-kt_draw:
-        ld      de,64*32
-        call    loc
-        ld      bc,512
-        xor     a
-        call    memfill
-        ld      a,(kt_last)
-        ld      (kt_shown),a
-        ld      hl,txt_kt3
-        ld      de,64*32+2
-        call    puts_at
-        ld      a,' '
-        call    putc
-        ld      a,(kt_buf)
-        or      a
-        jr      z,kd_l
-        ld      b,a
-        ld      de,kt_buf+1
-kd_h:   push    de
-        push    bc
-        ld      a,(de)
-        call    put_hex
-        pop     bc
-        pop     de
-        inc     de
-        djnz    kd_h
-kd_l:   ld      hl,txt_kt4
-        ld      de,88*32+2
-        call    puts_at
-        ld      a,' '
-        call    putc
-        ld      a,(kt_last)
-        cp      0xFF
-        jr      z,kd_n
-        jp      put_hex
-kd_n:   ld      a,'-'
-        call    putc
-        ld      a,'-'
-        jp      putc
-
-; put_hex  A = byte, HL = dest -> prints two hex digits and a space, HL = next cell. Clobbers AF,BC,DE.
-put_hex:
-        push    af
-        rrca
-        rrca
-        rrca
-        rrca
-        call    hex_c
-        call    putc
-        pop     af
-        call    hex_c
-        call    putc
-        ld      a,' '
-        jp      putc
-hex_c:  and     0x0F
-        add     a,'0'
-        cp      '9'+1
-        ret     c
-        add     a,7
-        ret
 
 help_screen:
         call    cls
@@ -1010,7 +877,8 @@ keytab: defb    0x39,0, 0x0E,0, 0x26,0, 0x1F,0, 0x35,0  ; left:  arrow, A, J, 4,
         defb    0x2C,KEY_SOUND          ; M
         defb    0x10,KEY_MODE           ; C
         defb    0x18,KEY_HELP           ; H
-        defb    0x16,KEY_TEST           ; T (splash only)
+        defb    0x0C,KEY_QUIT           ; Q
+        defb    0x3F,KEY_QUIT           ; BRK
         defb    0xFF
 
 ; Palette, RRRGGGBB, not yet inverted. 16 backgrounds (pixel 0) by colour nibble = tile exponent, then 16 foregrounds (pixel 1).
@@ -1030,10 +898,7 @@ splash_tiles: defb 1,3,7,10
 dbltab:   defb  0x00,0x03,0x0C,0x0F,0x30,0x33,0x3C,0x3F,0xC0,0xC3,0xCC,0xCF,0xF0,0xF3,0xFC,0xFF
 
 is_color: defb  0
-kt_buf:   defs  7
-kt_new:   defs  7
-kt_last:  defb  0xFF
-kt_shown: defb  0xFF
+old_sp:   defw  0
 vbase:    defw  0
 scrp:     defw  0
 colp:     defw  0

@@ -11,11 +11,7 @@ txt_start: defb "NYOMJ MEG EGY GOMBOT", 0
 txt_k_help: defb "H  S", 0x86, "G", 0x83, 0
 txt_k_snd: defb "M  HANG: ", 0
 txt_k_mode: defb "C  K", 0x81, "PERNY", 0x85, ": ", 0
-txt_k_test: defb "T  BILLENTY", 0x88, "-TESZT", 0
-txt_kt1: defb "BILLENTY", 0x88, "TESZT - K", 0x83, "DOK", 0
-txt_kt2: defb "NYOMJ GOMBOKAT.  BRK = KIL", 0x81, "P", 0
-txt_kt3: defb "NYOMVA:", 0
-txt_kt4: defb "UTOLS", 0x83, ":", 0
+txt_k_quit: defb "Q  KIL", 0x81, "P", 0x81, "S (VAGY BRK)", 0
 txt_on: defb "BE ", 0
 txt_off: defb "KI ", 0
 txt_colour: defb "SZ", 0x82, "NES", 0
@@ -44,6 +40,7 @@ help_tbl:
         defb "M  HANG BE / KI", 0
         defb "C  SZ", 0x82, "NES / MONO K", 0x81, "PERNY", 0x85, 0
         defb "H  EZ A S", 0x86, "G", 0x83, 0
+        defb "Q  KIL", 0x81, "P", 0x81, "S (VAGY BRK)", 0
         defb " ", 0
         defb "NYOMJ MEG EGY GOMBOT", 0
         defb 0

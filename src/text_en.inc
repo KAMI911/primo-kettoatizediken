@@ -11,11 +11,7 @@ txt_start: defb "PRESS ANY KEY TO START", 0
 txt_k_help: defb "H  HOW TO PLAY", 0
 txt_k_snd: defb "M  SOUND: ", 0
 txt_k_mode: defb "C  SCREEN: ", 0
-txt_k_test: defb "T  KEY TEST", 0
-txt_kt1: defb "KEY TEST - SCAN CODES", 0
-txt_kt2: defb "PRESS KEYS.  BRK = EXIT", 0
-txt_kt3: defb "HELD:", 0
-txt_kt4: defb "LAST:", 0
+txt_k_quit: defb "Q  QUIT (OR BRK)", 0
 txt_on: defb "ON ", 0
 txt_off: defb "OFF", 0
 txt_colour: defb "COLOUR", 0
@@ -45,6 +41,7 @@ help_tbl:
         defb "M  SOUND ON / OFF", 0
         defb "C  COLOUR / MONO SCREEN", 0
         defb "H  THIS HELP", 0
+        defb "Q  QUIT (OR BRK)", 0
         defb " ", 0
         defb "PRESS ANY KEY", 0
         defb 0
