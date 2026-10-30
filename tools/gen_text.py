@@ -49,7 +49,7 @@ def write(path, d):
     for k in ("name1", "name2", "title", "score", "best", "snd_on", "snd_off", "tag", "start", "k_help", "k_snd", "k_mode", "k_quit",
               "on", "off", "colour", "mono", "sub", "by", "and_", "cof", "url", "news", "nurl"):
         L.append("txt_%s: defb %s" % (k, asm(d[k])))
-    for k, n in (("sub", len(d["sub"])), ("cof", len(d["cof"])), ("url", len(d["url"])), ("news", len(d["news"])), ("nurl", len(d["nurl"]))):
+    for k, n in (("sub", len(d["sub"])), ("by", len(d["by"]) + 4 + len(d["and_"])), ("cof", len(d["cof"])), ("url", len(d["url"])), ("news", len(d["news"])), ("nurl", len(d["nurl"]))):
         L.append("txt_%s_col: defb %d" % (k, (32 - n) // 2))                                  # centred text column
     for k in ("msg_help", "msg_win", "msg_over"):
         L.append("%s: defb %s" % (k, asm(d[k])))

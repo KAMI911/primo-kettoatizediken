@@ -24,6 +24,7 @@ txt_url: defb "HTTPS://KO-FI.COM/KAMI911", 0
 txt_news: defb "NEWS AND TIPS:", 0
 txt_nurl: defb "HTTPS://LINUXMINT.HU", 0
 txt_sub_col: defb 10
+txt_by_col: defb 7
 txt_cof_col: defb 8
 txt_url_col: defb 3
 txt_news_col: defb 9

@@ -953,7 +953,10 @@ spl_m:  call    puts
 spl_q:  ld      hl,txt_k_quit
         call    puts_at
         ld      hl,txt_by               ; "MADE BY: KAMI & AI": K M vivid, A I vivid and inverse
-        ld      de,140*32+4             ; made-by line at column 4: K M vivid, A I vivid and inverse
+        ld      de,140*32               ; made-by line, centred: K M vivid, A I vivid and inverse
+        ld      a,(txt_by_col)
+        add     a,e
+        ld      e,a
         call    puts_at
         ld      a,'K'
         ld      bc,0x00CC
