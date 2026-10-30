@@ -884,25 +884,25 @@ dbl_nib:
 ; ---------------------------------------------------------------- splash and help screens
 draw_splash:
         call    cls
-        ld      de,2*32+9
+        ld      de,0*32+9
         call    loc
         ld      de,txt_name1
         call    puts2
-        ld      de,20*32+7
+        ld      de,17*32+7
         call    loc
         ld      de,txt_name2
         call    puts2
         ld      hl,txt_sub              ; "PRIMO A/B/C" under the title
-        ld      de,38*32
+        ld      de,35*32
         ld      a,(txt_sub_col)
         add     a,e
         ld      e,a
         call    puts_at
         ld      hl,(vbase)                      ; a row of four sample tiles: 2, 8, 128, 1024
-        ld      de,48*32+BOARD_X
+        ld      de,44*32+BOARD_X
         add     hl,de
         ld      (scrp),hl
-        ld      hl,VRAM_CTRL+0x80+(COLOR_TOP/4+48/4)*32+BOARD_X
+        ld      hl,VRAM_CTRL+0x80+(COLOR_TOP/4+44/4)*32+BOARD_X
         ld      (colp),hl
         ld      ix,splash_tiles
         ld      b,4
@@ -920,16 +920,16 @@ spl_t:  push    bc
         pop     bc
         djnz    spl_t
         ld      hl,txt_tag
-        ld      de,90*32+4
+        ld      de,86*32+4
         call    puts_at
         ld      hl,txt_start
-        ld      de,99*32+5
+        ld      de,95*32+5
         call    puts_at
         ld      hl,txt_k_help
-        ld      de,110*32+8
+        ld      de,105*32+8
         call    puts_at
         ld      hl,txt_k_snd
-        ld      de,118*32+8
+        ld      de,113*32+8
         call    puts_at
         ld      de,txt_on               ; HL = cursor after the label
         ld      a,(sound)
@@ -937,7 +937,7 @@ spl_t:  push    bc
         jr      nz,spl_s
         ld      de,txt_off
 spl_s:  call    puts
-        ld      de,126*32+8
+        ld      de,121*32+8
         ld      a,(has_col)
         or      a
         jr      z,spl_q                 ; no colour hardware: no C line, Q moves up
@@ -949,14 +949,11 @@ spl_s:  call    puts
         jr      nz,spl_m
         ld      de,txt_mono
 spl_m:  call    puts
-        ld      de,134*32+8
+        ld      de,129*32+8
 spl_q:  ld      hl,txt_k_quit
         call    puts_at
         ld      hl,txt_by               ; "MADE BY: KAMI & AI": K M vivid, A I vivid and inverse
-        ld      de,146*32               ; made-by line; half a line (4 px) of space, then the links at 158, 166, 174, 182 (low byte + column never carries)
-        ld      a,(txt_by_col)
-        add     a,e
-        ld      e,a
+        ld      de,140*32+4             ; made-by line at column 4 on a filled bar: drawn normally, the row is inverted at the end
         call    puts_at
         ld      a,'K'
         ld      bc,0x00CC
@@ -972,27 +969,36 @@ spl_q:  ld      hl,txt_k_quit
         call    put_kami
         ld      de,txt_and_
         call    puts
-        ; coffee and news links: centred lines
+        ld      hl,(vbase)              ; invert the whole row: black text on a white bar; K M become blocks, A I stay light on dark
+        ld      de,140*32
+        add     hl,de
+        ld      b,0
+bar_i:  ld      a,(hl)
+        cpl
+        ld      (hl),a
+        inc     hl
+        djnz    bar_i
+        ; coffee and news links: centred lines (half a line below the made-by bar); low byte + column never carries
         ld      hl,txt_cof
-        ld      de,158*32
+        ld      de,151*32
         ld      a,(txt_cof_col)
         add     a,e
         ld      e,a
         call    puts_at
         ld      hl,txt_url
-        ld      de,166*32
+        ld      de,159*32
         ld      a,(txt_url_col)
         add     a,e
         ld      e,a
         call    puts_at
         ld      hl,txt_news
-        ld      de,174*32
+        ld      de,167*32
         ld      a,(txt_news_col)
         add     a,e
         ld      e,a
         call    puts_at
         ld      hl,txt_nurl
-        ld      de,182*32
+        ld      de,175*32
         ld      a,(txt_nurl_col)
         add     a,e
         ld      e,a
