@@ -372,7 +372,11 @@ init_video:
         ld      hl,VRAM_MONO
         ld      (vbase),hl
         jr      cls
-iv_col: call    set_palette
+iv_col: ld      hl,VRAM_CTRL            ; wipe control, palette, colour RAM and pixels first (as Raktaros): a reset
+        ld      bc,VRAM_CTRL_SZ         ; leaves whatever the ROM or the last program put in the control area
+        xor     a
+        call    memfill
+        call    set_palette
         ld      hl,VRAM_COLOR+COLOR_TOP*32
         ld      (vbase),hl
 ; cls: clear pixels (and colour RAM on the colour model).
