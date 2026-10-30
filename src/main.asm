@@ -953,7 +953,7 @@ spl_m:  call    puts
 spl_q:  ld      hl,txt_k_quit
         call    puts_at
         ld      hl,txt_by               ; "MADE BY: KAMI & AI": K M vivid, A I vivid and inverse
-        ld      de,140*32+4             ; made-by line at column 4 on a filled bar: drawn normally, the row is inverted at the end
+        ld      de,140*32+4             ; made-by line at column 4: K M vivid, A I vivid and inverse
         call    puts_at
         ld      a,'K'
         ld      bc,0x00CC
@@ -969,15 +969,6 @@ spl_q:  ld      hl,txt_k_quit
         call    put_kami
         ld      de,txt_and_
         call    puts
-        ld      hl,(vbase)              ; invert the whole row: black text on a white bar; K M become blocks, A I stay light on dark
-        ld      de,140*32
-        add     hl,de
-        ld      b,0
-bar_i:  ld      a,(hl)
-        cpl
-        ld      (hl),a
-        inc     hl
-        djnz    bar_i
         ; coffee and news links: centred lines (half a line below the made-by bar); low byte + column never carries
         ld      hl,txt_cof
         ld      de,151*32
