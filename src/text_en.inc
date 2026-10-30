@@ -16,12 +16,14 @@ txt_on: defb "ON ", 0
 txt_off: defb "OFF", 0
 txt_colour: defb "COLOUR", 0
 txt_mono: defb "MONO  ", 0
+txt_sub: defb "PRIMO A/B/C", 0
 txt_by: defb "MADE BY: ", 0
 txt_and_: defb " & AI", 0
 txt_cof: defb "BUY ME A COFFEE:", 0
 txt_url: defb "HTTPS://KO-FI.COM/KAMI911", 0
 txt_news: defb "NEWS AND TIPS:", 0
 txt_nurl: defb "HTTPS://LINUXMINT.HU", 0
+txt_sub_col: defb 10
 txt_by_col: defb 7
 txt_cof_col: defb 8
 txt_url_col: defb 3

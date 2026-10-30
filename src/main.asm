@@ -884,14 +884,20 @@ dbl_nib:
 ; ---------------------------------------------------------------- splash and help screens
 draw_splash:
         call    cls
-        ld      de,8*32+9
+        ld      de,2*32+9
         call    loc
         ld      de,txt_name1
         call    puts2
-        ld      de,28*32+7
+        ld      de,20*32+7
         call    loc
         ld      de,txt_name2
         call    puts2
+        ld      hl,txt_sub              ; "PRIMO A/B/C" under the title
+        ld      de,38*32
+        ld      a,(txt_sub_col)
+        add     a,e
+        ld      e,a
+        call    puts_at
         ld      hl,(vbase)                      ; a row of four sample tiles: 2, 8, 128, 1024
         ld      de,48*32+BOARD_X
         add     hl,de
@@ -914,16 +920,16 @@ spl_t:  push    bc
         pop     bc
         djnz    spl_t
         ld      hl,txt_tag
-        ld      de,92*32+4
+        ld      de,90*32+4
         call    puts_at
         ld      hl,txt_start
-        ld      de,102*32+5
+        ld      de,99*32+5
         call    puts_at
         ld      hl,txt_k_help
-        ld      de,114*32+8
+        ld      de,110*32+8
         call    puts_at
         ld      hl,txt_k_snd
-        ld      de,122*32+8
+        ld      de,118*32+8
         call    puts_at
         ld      de,txt_on               ; HL = cursor after the label
         ld      a,(sound)
@@ -931,7 +937,7 @@ spl_t:  push    bc
         jr      nz,spl_s
         ld      de,txt_off
 spl_s:  call    puts
-        ld      de,130*32+8
+        ld      de,126*32+8
         ld      a,(has_col)
         or      a
         jr      z,spl_q                 ; no colour hardware: no C line, Q moves up
@@ -943,11 +949,11 @@ spl_s:  call    puts
         jr      nz,spl_m
         ld      de,txt_mono
 spl_m:  call    puts
-        ld      de,138*32+8
+        ld      de,134*32+8
 spl_q:  ld      hl,txt_k_quit
         call    puts_at
         ld      hl,txt_by               ; "MADE BY: KAMI & AI": K M vivid, A I vivid and inverse
-        ld      de,150*32               ; credit lines sit at text lines 150, 158, 166, 174, 182 (low byte $C0 + column never carries)
+        ld      de,146*32               ; made-by line; half a line (4 px) of space, then the links at 158, 166, 174, 182 (low byte + column never carries)
         ld      a,(txt_by_col)
         add     a,e
         ld      e,a
