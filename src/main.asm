@@ -893,10 +893,10 @@ draw_splash:
         ld      de,txt_name2
         call    puts2
         ld      hl,(vbase)                      ; a row of four sample tiles: 2, 8, 128, 1024
-        ld      de,56*32+BOARD_X
+        ld      de,48*32+BOARD_X
         add     hl,de
         ld      (scrp),hl
-        ld      hl,VRAM_CTRL+0x80+(COLOR_TOP/4+56/4)*32+BOARD_X
+        ld      hl,VRAM_CTRL+0x80+(COLOR_TOP/4+48/4)*32+BOARD_X
         ld      (colp),hl
         ld      ix,splash_tiles
         ld      b,4
@@ -914,16 +914,16 @@ spl_t:  push    bc
         pop     bc
         djnz    spl_t
         ld      hl,txt_tag
-        ld      de,100*32+4
+        ld      de,92*32+4
         call    puts_at
         ld      hl,txt_start
-        ld      de,116*32+5
+        ld      de,102*32+5
         call    puts_at
         ld      hl,txt_k_help
-        ld      de,132*32+8
+        ld      de,114*32+8
         call    puts_at
         ld      hl,txt_k_snd
-        ld      de,140*32+8
+        ld      de,122*32+8
         call    puts_at
         ld      de,txt_on               ; HL = cursor after the label
         ld      a,(sound)
@@ -931,7 +931,7 @@ spl_t:  push    bc
         jr      nz,spl_s
         ld      de,txt_off
 spl_s:  call    puts
-        ld      de,148*32+8
+        ld      de,130*32+8
         ld      a,(has_col)
         or      a
         jr      z,spl_q                 ; no colour hardware: no C line, Q moves up
@@ -943,13 +943,14 @@ spl_s:  call    puts
         jr      nz,spl_m
         ld      de,txt_mono
 spl_m:  call    puts
-        ld      de,156*32+8
+        ld      de,138*32+8
 spl_q:  ld      hl,txt_k_quit
         call    puts_at
         ld      hl,txt_by               ; "MADE BY: KAMI & AI": K M vivid, A I vivid and inverse
+        ld      de,150*32               ; credit lines sit at text lines 150, 158, 166, 174, 182 (low byte $C0 + column never carries)
         ld      a,(txt_by_col)
+        add     a,e
         ld      e,a
-        ld      d,168*32/256            ; text row 168, column = centred
         call    puts_at
         ld      a,'K'
         ld      bc,0x00CC
@@ -965,15 +966,30 @@ spl_q:  ld      hl,txt_k_quit
         call    put_kami
         ld      de,txt_and_
         call    puts
-        ld      hl,txt_cof              ; coffee link, two centred lines
+        ; coffee and news links: centred lines
+        ld      hl,txt_cof
+        ld      de,158*32
         ld      a,(txt_cof_col)
+        add     a,e
         ld      e,a
-        ld      d,176*32/256
         call    puts_at
         ld      hl,txt_url
+        ld      de,166*32
         ld      a,(txt_url_col)
+        add     a,e
         ld      e,a
-        ld      d,184*32/256
+        call    puts_at
+        ld      hl,txt_news
+        ld      de,174*32
+        ld      a,(txt_news_col)
+        add     a,e
+        ld      e,a
+        call    puts_at
+        ld      hl,txt_nurl
+        ld      de,182*32
+        ld      a,(txt_nurl_col)
+        add     a,e
+        ld      e,a
         jp      puts_at
 
 help_screen:

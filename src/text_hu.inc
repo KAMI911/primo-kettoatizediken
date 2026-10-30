@@ -20,9 +20,13 @@ txt_by: defb "K", 0x81, "SZ", 0x82, "TETTE: ", 0
 txt_and_: defb " & AI", 0
 txt_cof: defb "H", 0x82, "VJ MEG EGY K", 0x80, "V", 0x81, "RA:", 0
 txt_url: defb "HTTPS://KO-FI.COM/KAMI911", 0
+txt_news: defb "H", 0x82, "REK ", 0x81, "S ", 0x81, "RDEKESS", 0x81, "GEK:", 0
+txt_nurl: defb "HTTPS://LINUXMINT.HU", 0
 txt_by_col: defb 5
 txt_cof_col: defb 6
 txt_url_col: defb 3
+txt_news_col: defb 5
+txt_nurl_col: defb 6
 msg_help: defb "H:S", 0x86, "G", 0x83, " M:HANG C:M", 0x83, "D R:", 0x86, "J", 0
 msg_win: defb "MEGVAN AZ 1024! FOLYTATHATOD", 0
 msg_over: defb "V", 0x81, "GE A J", 0x80, "T", 0x81, "KNAK - R: ", 0x86, "J", 0
