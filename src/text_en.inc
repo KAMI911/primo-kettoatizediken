@@ -17,6 +17,8 @@ txt_off: defb "OFF", 0
 txt_colour: defb "COLOUR", 0
 txt_mono: defb "MONO  ", 0
 txt_credit: defb "FOR PRIMO A/B/C", 0
+txt_by: defb "MADE BY: ", 0
+txt_and_: defb " & AI", 0
 msg_help: defb "H:HELP M:SOUND C:MODE R:NEW", 0
 msg_win: defb "YOU MADE 1024! KEEP GOING", 0
 msg_over: defb "GAME OVER - PRESS R", 0

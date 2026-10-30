@@ -463,6 +463,54 @@ sp_cp:  ld      a,(de)
         ld      (VRAM_CTRL+1),a
         ret
 
+; put_kami  A = char, HL = cell, C = colour byte (palette nibble twice), B = 1 for inverse video. -> HL = next cell.
+; Colour model: the two colour RAM cells of the glyph get the colour. Clobbers AF,BC,DE.
+put_kami:
+        push    hl
+        push    bc
+        call    putc
+        pop     bc
+        ex      (sp),hl                 ; HL = this cell, stack = next cell
+        ld      a,b
+        or      a
+        jr      z,pk_nc
+        push    hl
+        ld      de,32
+        ld      b,8
+pk_i:   ld      a,(hl)
+        cpl
+        ld      (hl),a
+        add     hl,de
+        djnz    pk_i
+        pop     hl
+pk_nc:  ld      a,(is_color)
+        or      a
+        jr      z,pk_end
+        ld      d,c
+        ld      bc,(vbase)
+        or      a
+        sbc     hl,bc                   ; offset in the picture -> colour RAM byte of the same cell
+        ld      a,l
+        and     0x1F
+        ld      c,a
+        ld      a,l
+        and     0x80
+        ld      l,a
+        srl     h
+        rr      l
+        srl     h
+        rr      l
+        ld      b,0
+        add     hl,bc
+        ld      bc,VRAM_CTRL+0x80+COLOR_TOP/4*32
+        add     hl,bc
+        ld      (hl),d
+        ld      bc,32
+        add     hl,bc
+        ld      (hl),d
+pk_end: pop     hl
+        ret
+
 ; putc  A = ASCII 32..95 (others show '?'), HL = top byte of the 8x8 cell. Draws the glyph, -> HL = next cell. Clobbers AF,BC,DE.
 putc:
         push    hl
@@ -895,6 +943,23 @@ spl_m:  call    puts
         ld      de,164*32+8
 spl_q:  ld      hl,txt_k_quit
         call    puts_at
+        ld      hl,txt_by               ; "MADE BY: KAMI & AI": K M vivid, A I vivid and inverse
+        ld      de,172*32+4
+        call    puts_at
+        ld      a,'K'
+        ld      bc,0x00EE
+        call    put_kami
+        ld      a,'A'
+        ld      bc,0x01FF
+        call    put_kami
+        ld      a,'M'
+        ld      bc,0x00EE
+        call    put_kami
+        ld      a,'I'
+        ld      bc,0x01FF
+        call    put_kami
+        ld      de,txt_and_
+        call    puts
         ld      hl,txt_credit
         ld      de,182*32+8
         jp      puts_at
@@ -941,9 +1006,9 @@ keytab: defb    0x39,0, 0x0E,0, 0x26,0, 0x1F,0, 0x35,0  ; left:  arrow, A, J, 4,
 ; Palette, RRRGGGBB, not yet inverted. 16 backgrounds (pixel 0) by colour nibble = tile exponent, then 16 foregrounds (pixel 1).
 palette:
         defb    0x00,0xFE,0xFA,0xF0,0xEC,0xE8,0xE0,0xFC     ; empty, 2, 4, 8, 16, 32, 64, 128
-        defb    0xBC,0x1C,0x1F,0xFF,0xFF,0xFF,0xFF,0xFF     ; 256, 512, 1024, unused
+        defb    0xBC,0x1C,0x1F,0xFF,0xFF,0xFF,0x00,0x00     ; 256, 512, 1024, 2048..8192 white, nibbles 14/15 = black (KAMI credit)
         defb    0xFF,0x00,0x00,0x00,0x00,0x00,0xFF,0x00     ; text/borders: white on empty, black on tiles, white on 64
-        defb    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+        defb    0x00,0x00,0x00,0x00,0x00,0x00,0xE3,0x1F     ; nibble 14 ink magenta, 15 ink cyan (K M / A I of the credit)
 
 IF LANG_HU
         include "text_hu.inc"
